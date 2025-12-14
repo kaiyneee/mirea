@@ -195,9 +195,34 @@ def compute_quality_flags(summary: DatasetSummary, missing_df: pd.DataFrame) -> 
 
     score = max(0.0, min(1.0, score))
     flags["quality_score"] = score
+    
+    flags["has_constant_columns"] = has_constant_columns(summary)
+    flags["has_suspicious_id_duplicates"] = has_suspicious_id_duplicates(summary)
 
     return flags
 
+
+
+def has_constant_columns(summary: DatasetSummary) -> bool: #моя функция
+    """
+    флаг, показывающий, есть ли колонки, где все значения одинаковые.
+    """
+    for col in summary.columns:
+        if col.unique == 1: 
+            return True      
+    return False  
+
+
+def has_suspicious_id_duplicates(summary: DatasetSummary) -> bool: #моя функция
+    '''
+    проверка, что идентификатор (например, user_id) уникален; при наличии дубликатов выставлять флаг
+    '''
+    for col in summary.columns:  
+        if 'id' in col.name.lower():
+            if col.unique < summary.n_rows:
+                return True 
+    return False 
+    
 
 def flatten_summary_for_print(summary: DatasetSummary) -> pd.DataFrame:
     """

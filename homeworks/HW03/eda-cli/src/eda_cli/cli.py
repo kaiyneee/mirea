@@ -125,6 +125,9 @@ def report(
         f.write(f"- Слишком мало строк: **{quality_flags['too_few_rows']}**\n")
         f.write(f"- Слишком много колонок: **{quality_flags['too_many_columns']}**\n")
         f.write(f"- Слишком много пропусков: **{quality_flags['too_many_missing']}**\n\n")
+        f.write(f"- Константные колонки: **{quality_flags['has_constant_columns']}**\n") #новыая эвристика
+        f.write(f"- Дубликаты идентификаторов (id): **{quality_flags['has_suspicious_id_duplicates']}**\n\n") #новыая эвристика
+
 
         f.write("## Колонки\n\n")
         f.write("См. файл `summary.csv`.\n\n")

@@ -75,3 +75,33 @@ def test_quality_flags_constant_column():
     flags = compute_quality_flags(summary, missing_df)
 
     assert flags["has_constant_columns"] is True
+
+
+from eda_cli.core import summarize_dataset, compute_quality_flags
+
+
+def test_has_constant_columns_flag():
+    """
+    Проверяем, что флаг has_constant_columns
+    выставляется в True при наличии константной колонки.
+    """
+    df = pd.DataFrame(
+        {
+            "constant_col": [1, 1, 1, 1],
+            "variable_col": [1, 2, 3, 4],
+        }
+    )
+
+    summary = summarize_dataset(df)
+
+    # имитируем таблицу пропусков (пропусков нет)
+    missing_df = pd.DataFrame(
+        {
+            "missing_share": [0.0, 0.0],
+        },
+        index=["constant_col", "variable_col"],
+    )
+
+    flags = compute_quality_flags(summary, missing_df)
+
+    assert flags["has_constant_columns"] is True

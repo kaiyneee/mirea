@@ -170,7 +170,7 @@ def top_categories(
     return result
 
 
-def compute_quality_flags(summary: DatasetSummary, missing_df: pd.DataFrame) -> Dict[str, Any]:
+def compute_quality_flags(summary: DatasetSummary, missing_df: pd.DataFrame, min_missing_share: float = 0.5) -> Dict[str, Any]:
     """
     Простейшие эвристики «качества» данных:
     - слишком много пропусков;
@@ -183,7 +183,18 @@ def compute_quality_flags(summary: DatasetSummary, missing_df: pd.DataFrame) -> 
 
     max_missing_share = float(missing_df["missing_share"].max()) if not missing_df.empty else 0.0
     flags["max_missing_share"] = max_missing_share
-    flags["too_many_missing"] = max_missing_share > 0.5
+    flags["too_many_missing"] = max_missing_share > min_missing_share
+    has_constant_columns = False
+    for col in summary.columns:
+        if col.unique == 1:
+            has_constant_columns = True
+    flags["has_constant_columns"] = has_constant_columns
+    flags["has_suspicious_id_duplicates"] = False
+    for col in summary.columns:
+        if col.name == 'user_id':
+            flags["has_suspicious_id_duplicates"] = col.unique < summary.n_rows
+    
+        
 
     # Простейший «скор» качества
     score = 1.0
@@ -195,34 +206,9 @@ def compute_quality_flags(summary: DatasetSummary, missing_df: pd.DataFrame) -> 
 
     score = max(0.0, min(1.0, score))
     flags["quality_score"] = score
-    
-    flags["has_constant_columns"] = has_constant_columns(summary)
-    flags["has_suspicious_id_duplicates"] = has_suspicious_id_duplicates(summary)
 
     return flags
 
-
-
-def has_constant_columns(summary: DatasetSummary) -> bool: #моя функция
-    """
-    флаг, показывающий, есть ли колонки, где все значения одинаковые.
-    """
-    for col in summary.columns:
-        if col.unique == 1: 
-            return True      
-    return False  
-
-
-def has_suspicious_id_duplicates(summary: DatasetSummary) -> bool: #моя функция
-    '''
-    проверка, что идентификатор (например, user_id) уникален; при наличии дубликатов выставлять флаг
-    '''
-    for col in summary.columns:  
-        if 'id' in col.name.lower():
-            if col.unique < summary.n_rows:
-                return True 
-    return False 
-    
 
 def flatten_summary_for_print(summary: DatasetSummary) -> pd.DataFrame:
     """

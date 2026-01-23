@@ -67,14 +67,9 @@ def report(
     sep: str = typer.Option(",", help="Разделитель в CSV."),
     encoding: str = typer.Option("utf-8", help="Кодировка файла."),
     max_hist_columns: int = typer.Option(6, help="Максимум числовых колонок для гистограмм."),
-    top_k_categories: int = typer.Option(
-        5, help="Сколько top-значений выводить для категориальных колонок"
-    ),
-    title: str = typer.Option(
-        "EDA-отчёт", help="Заголовок отчёта"
-    ),
+    top_k_categories: int = typer.Option(5, help="Cколько top-значений выводить для категориальных признаков."),
+    min_missing_share: float = typer.Option(0.5, help="Порог доли пропусков.")
 ) -> None:
-
     """
     Сгенерировать полный EDA-отчёт:
     - текстовый overview и summary по колонкам (CSV/Markdown);
@@ -95,9 +90,8 @@ def report(
     corr_df = correlation_matrix(df)
     top_cats = top_categories(df, top_k=top_k_categories)
 
-
     # 2. Качество в целом
-    quality_flags = compute_quality_flags(summary, missing_df)
+    quality_flags = compute_quality_flags(summary, missing_df, min_missing_share=min_missing_share)
 
     # 3. Сохраняем табличные артефакты
     summary_df.to_csv(out_root / "summary.csv", index=False)
@@ -110,24 +104,18 @@ def report(
     # 4. Markdown-отчёт
     md_path = out_root / "report.md"
     with md_path.open("w", encoding="utf-8") as f:
-        f.write(f"# {title}\n\n")
+        f.write(f"# EDA-отчёт\n\n")
         f.write(f"Исходный файл: `{Path(path).name}`\n\n")
         f.write(f"Строк: **{summary.n_rows}**, столбцов: **{summary.n_cols}**\n\n")
 
-        f.write("## Параметры отчёта\n\n")
-        f.write(f"- Максимум гистограмм: **{max_hist_columns}**\n")
-        f.write(f"- Top-K категорий: **{top_k_categories}**\n\n")
-
         f.write("## Качество данных (эвристики)\n\n")
-
         f.write(f"- Оценка качества: **{quality_flags['quality_score']:.2f}**\n")
         f.write(f"- Макс. доля пропусков по колонке: **{quality_flags['max_missing_share']:.2%}**\n")
         f.write(f"- Слишком мало строк: **{quality_flags['too_few_rows']}**\n")
         f.write(f"- Слишком много колонок: **{quality_flags['too_many_columns']}**\n")
         f.write(f"- Слишком много пропусков: **{quality_flags['too_many_missing']}**\n\n")
-        f.write(f"- Константные колонки: **{quality_flags['has_constant_columns']}**\n") #новыая эвристика
-        f.write(f"- Дубликаты идентификаторов (id): **{quality_flags['has_suspicious_id_duplicates']}**\n\n") #новыая эвристика
-
+        f.write(f"- Присутствуют дубликаты идентификаторов: **{quality_flags['has_suspicious_id_duplicates']}**\n\n")
+        f.write(f"- Присутствуют колонки где все значения одинаковы: **{quality_flags['has_constant_columns']}**\n\n")
 
         f.write("## Колонки\n\n")
         f.write("См. файл `summary.csv`.\n\n")

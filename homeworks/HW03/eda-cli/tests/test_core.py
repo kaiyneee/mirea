@@ -46,6 +46,8 @@ def test_missing_table_and_quality_flags():
     summary = summarize_dataset(df)
     flags = compute_quality_flags(summary, missing_df)
     assert 0.0 <= flags["quality_score"] <= 1.0
+    assert flags["has_constant_columns"] == False
+    assert flags["has_suspicious_id_duplicates"] == False
 
 
 def test_correlation_and_top_categories():
@@ -60,48 +62,18 @@ def test_correlation_and_top_categories():
     assert "value" in city_table.columns
     assert len(city_table) <= 2
 
-
-def test_quality_flags_constant_column():
+def test_new_quality_flags():
     df = pd.DataFrame(
         {
-            "id": [1, 2, 3, 4],
-            "constant": [5, 5, 5, 5],
-            "value": [10, 20, 30, 40],
+            "user_id": [1, 2, 2, 2],
+            "age": [10, 10, 10, 10],
+            "height": [140, 150, 160, 170],
+            "city": ["A", "B", "A", None],
         }
     )
-
-    summary = summarize_dataset(df)
     missing_df = missing_table(df)
-    flags = compute_quality_flags(summary, missing_df)
-
-    assert flags["has_constant_columns"] is True
-
-
-from eda_cli.core import summarize_dataset, compute_quality_flags
-
-
-def test_has_constant_columns_flag():
-    """
-    Проверяем, что флаг has_constant_columns
-    выставляется в True при наличии константной колонки.
-    """
-    df = pd.DataFrame(
-        {
-            "constant_col": [1, 1, 1, 1],
-            "variable_col": [1, 2, 3, 4],
-        }
-    )
-
     summary = summarize_dataset(df)
-
-    # имитируем таблицу пропусков (пропусков нет)
-    missing_df = pd.DataFrame(
-        {
-            "missing_share": [0.0, 0.0],
-        },
-        index=["constant_col", "variable_col"],
-    )
-
     flags = compute_quality_flags(summary, missing_df)
 
-    assert flags["has_constant_columns"] is True
+    assert flags["has_constant_columns"] == True
+    assert flags["has_suspicious_id_duplicates"] == True

@@ -8,11 +8,11 @@
   },
   "search_summary": {
     "best_params": {
-      "learning_rate": 0.1,
-      "max_depth": null,
-      "max_leaf_nodes": 63
+      "learning_rate": 0.03,
+      "max_depth": 2,
+      "max_leaf_nodes": 15
     },
-    "best_cv_roc_auc": 0.9719880531240899
+    "best_cv_roc_auc": 0.5121745829426472
   },
   "random_state": 42
 }

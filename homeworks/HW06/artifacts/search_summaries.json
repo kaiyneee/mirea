@@ -2,7 +2,6 @@
   "LogReg(scaled)": {
     "best_params": {
       "lr__C": 10.0,
-      "lr__penalty": "l2",
       "lr__solver": "lbfgs"
     },
     "best_cv_roc_auc": 0.8822238806908922

@@ -5,5 +5,5 @@
         "max_depth": 10,
         "max_iter": 200
     },
-    "final_roc_auc_test": 0.973808
+    "final_roc_auc_test": 0.9738078309887767
 }

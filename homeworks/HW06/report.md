@@ -85,37 +85,34 @@ HistGradientBoosting
 
 Результаты сравнения:
 Модель	Accuracy	F1-Score	ROC-AUC	Время обучения
-Dummy Classifier	0.676	0.000	0.500	<1 сек
-Logistic Regression	0.827	0.707	0.874	2 сек
-Decision Tree	0.892	0.835	0.912	15 сек
-Random Forest	0.924	0.882	0.962	45 сек
-HistGradientBoosting	0.938	0.903	0.974	60 сек
+Dummy Classifier	0.677	0.000	0.500	<1 сек
+Logistic Regression	0.828	0.708	0.875	2 сек
+Decision Tree	0.877	0.800	0.907	15 сек
+Random Forest	0.929	0.885	0.967	45 сек
+HistGradientBoosting	0.939	0.903	0.974	60 сек
 Лучшие параметры моделей:
 HistGradientBoosting (победитель):
 
 python
 {
-    'learning_rate': 0.1,
-    'max_depth': 7,
-    'max_iter': 200,
-    'min_samples_leaf': 5
+    'learning_rate': 0.2,
+    'max_depth': 10,
+    'max_iter': 200
 }
 Random Forest:
 
 python
 {
     'n_estimators': 200,
-    'max_depth': 15,
-    'min_samples_split': 5,
-    'min_samples_leaf': 2
+    'max_depth': None,
+    'min_samples_leaf': 1
 }
 Decision Tree:
 
 python
 {
     'max_depth': 10,
-    'min_samples_split': 10,
-    'criterion': 'entropy'
+    'min_samples_leaf': 10
 }
 Ключевые выводы:
 Победитель: HistGradientBoosting продемонстрировал наилучшие результаты по всем метрикам
@@ -139,15 +136,15 @@ python
 Результаты анализа важности признаков:
 Топ-5 наиболее важных признаков:
 
-num_18 (важность: 0.142 ± 0.008) - самый информативный признак
+num18 (важность: 0.060) - самый информативный признак
 
-num_19 (важность: 0.098 ± 0.006)
+num19 (важность: 0.045)
 
-num_07 (важность: 0.067 ± 0.005)
+num07 (важность: 0.031)
 
-num_12 (важность: 0.045 ± 0.004)
+num04 (важность: 0.017)
 
-num_05 (важность: 0.038 ± 0.003)
+num01 (важность: 0.013)
 
 Ключевые наблюдения:
 Доминирование числовых признаков: Все топ-10 признаков - числовые

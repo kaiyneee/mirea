@@ -1,8 +1,11 @@
 {
     "DecisionTree": {
         "best_params": {
+            "ccp_alpha": 0.0,
             "max_depth": 10,
-            "min_samples_leaf": 10
+            "max_leaf_nodes": null,
+            "min_samples_leaf": 10,
+            "min_samples_split": 2
         },
         "best_cv_score": 0.9075932310125838
     },
@@ -15,6 +18,14 @@
         "best_cv_score": 0.9686771317959189
     },
     "HistGradientBoosting": {
+        "best_params": {
+            "learning_rate": 0.2,
+            "max_depth": 10,
+            "max_iter": 200
+        },
+        "best_cv_score": 0.9741160982249445
+    },
+    "Boosting": {
         "best_params": {
             "learning_rate": 0.2,
             "max_depth": 10,

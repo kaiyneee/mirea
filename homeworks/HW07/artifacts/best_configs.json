@@ -1,0 +1,17 @@
+{
+    "dataset_1": {
+        "model": "KMeans",
+        "k": 2,
+        "criterion": "max_silhouette"
+    },
+    "dataset_2": {
+        "model": "KMeans",
+        "k": 2,
+        "criterion": "max_silhouette"
+    },
+    "dataset_4": {
+        "model": "KMeans",
+        "k": 5,
+        "criterion": "max_silhouette"
+    }
+}

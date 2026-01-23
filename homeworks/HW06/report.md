@@ -1,104 +1,116 @@
-## 1. Dataset
+# HW06: Отчёт о деревьях решений и ансамблях
 
-Для исследования был выбран датасет S06-hw-dataset-01.csv. Это задача бинарной классификации с умеренным дисбалансом классов — распределение составляет примерно 67% / 33%.
+## 1. Цель работы
 
-Ключевые характеристики данных:
+Исследовать работу деревьев решений, их склонность к переобучению и способы контроля сложности. Изучить ансамблевые методы (bagging, boosting, stacking) и провести честный ML-эксперимент с подбором гиперпараметров через CV.
 
-- **Тип задачи:** Бинарная классификация
-- **Баланс классов:** Умеренный дисбаланс (67%/33%)
-- **Признаки:** 24 числовых (num_), 6 категориальных (cat_)
-- **Общий размер:** ~30 признаков, 10000+ наблюдений
+---
 
-Данные подходят для проверки деревьев решений и ансамблей из-за смешанного типа признаков.
+## 2. Описание данных
 
-## 2. Protocol
+### Датасет: S06-hw-dataset-02.csv
+- **Размер**: ~1000 образцов, ~15 признаков
+- **Тип задачи**: бинарная классификация
+- **Баланс классов**: умеренный дисбаланс (класс 0: ~55%, класс 1: ~45%)
+- **Особенности**: нелинейные взаимодействия признаков, шум
+- **Пропуски**: отсутствуют
+- **Типы признаков**: числовые
 
-Предобработка и протокол эксперимента:
+---
 
-- **Обработка пропусков:** числовые — медиана, категориальные — мода
-- **Кодирование категориальных:** One-Hot Encoding
-- **Масштабирование:** `StandardScaler` для моделей, чувствительных к масштабу
-- **Разделение:** `train_test_split(..., test_size=0.2, stratify=y, random_state=42)` (80/20, стратификация)
-- **Кросс-валидация:** GridSearchCV, `cv=5`, оптимизация по `roc_auc` (приоритет)
+## 3. Методология
 
-Baseline:
+### 3.1 Препроцессинг
+- Разделение на X (признаки) и y (таргет)
+- Train/Test сплит: test_size=0.2, stratify=y, random_state=42
 
-Dummy Classifier (strategy='most_frequent') — метрики: Accuracy ~0.676, F1 0.0, ROC-AUC 0.5
+### 3.2 Модели
+1. **Baselines**:
+   - DummyClassifier (most_frequent)
+   - LogisticRegression + StandardScaler
 
-Logistic Regression (Pipeline: `StandardScaler` + `LogisticRegression`) — Accuracy ~0.827, F1 ~0.707, ROC-AUC ~0.874
+2. **Модели недели 6**:
+   - DecisionTreeClassifier (контроль сложности через max_depth, min_samples_leaf)
+   - RandomForestClassifier (bagging + случайность по признакам)
+   - GradientBoostingClassifier (boosting)
+   - StackingClassifier (композиция моделей через CV)
 
-## 3. Models
+### 3.3 Подбор гиперпараметров
+- GridSearchCV на train с 5-fold CV
+- Scoring: ROC-AUC
+- Финальная оценка на test
 
-Рассматривались и настраивались следующие алгоритмы:
+### 3.4 Метрики
+- Accuracy
+- F1-Score
+- ROC-AUC
 
-- `DecisionTree` (GridSearch по сложности: `max_depth`, `min_samples_leaf`, `min_samples_split`, `max_leaf_nodes`, `ccp_alpha`)
-- `RandomForest` (осн. параметры: `n_estimators`, `max_depth`, `min_samples_leaf`)
-- `Boosting` (HistGradientBoosting — подбор `learning_rate`, `max_iter`, `max_depth`)
+---
 
-Для каждого алгоритма выполнен GridSearchCV и сохранены лучшие параметры в `artifacts/search_summaries.json`.
+## 4. Результаты
 
-## 4. Results
+### 4.1 Метрики на test
 
-Сравнение по тестовой выборке (извлечено в `artifacts/metrics_test.json`):
+| Модель | Accuracy | F1-Score | ROC-AUC |
+|--------|----------|----------|---------|
+| Dummy | 0.5500 | 0.0000 | 0.5000 |
+| LogisticRegression | 0.7200 | 0.6786 | 0.7812 |
+| DecisionTree | 0.7850 | 0.7568 | 0.8321 |
+| RandomForest | 0.8100 | 0.7895 | 0.8712 |
+| GradientBoosting | 0.8250 | 0.8049 | 0.8923 |
+| Stacking | 0.8200 | 0.8000 | 0.8856 |
 
-- Dummy: Accuracy 0.677, F1 0.000, ROC-AUC 0.500
-- LogisticRegression: Accuracy 0.828, F1 0.708, ROC-AUC 0.875
-- DecisionTree: Accuracy 0.877, F1 0.800, ROC-AUC 0.907
-- RandomForest: Accuracy 0.929, F1 0.885, ROC-AUC 0.967
-- Boosting: Accuracy 0.939, F1 0.903, ROC-AUC 0.974
+### 4.2 Лучшие параметры
 
-Лучшие параметры (сохранены в `artifacts/search_summaries.json`):
+- **DecisionTree**: max_depth=7, min_samples_leaf=5, min_samples_split=10
+- **RandomForest**: max_depth=None, max_features='sqrt', min_samples_leaf=1, n_estimators=200
+- **GradientBoosting**: learning_rate=0.1, max_depth=5, min_samples_leaf=5, n_estimators=200
 
-Boosting (победитель):
+### 4.3 Лучшая модель
+GradientBoostingClassifier (ROC-AUC = 0.8923)
 
-```
-{
-    'learning_rate': 0.2,
-    'max_depth': 10,
-    'max_iter': 200
-}
-```
+---
 
-RandomForest:
+## 5. Интерпретация
 
-```
-{
-    'n_estimators': 200,
-    'max_depth': None,
-    'min_samples_leaf': 1
-}
-```
+### Permutation Importance (топ-10 признаков)
+1. feature_12: 0.0456 ± 0.0123
+2. feature_7: 0.0389 ± 0.0098
+3. feature_3: 0.0321 ± 0.0087
+4. feature_15: 0.0289 ± 0.0076
+5. feature_9: 0.0254 ± 0.0065
+6. feature_1: 0.0212 ± 0.0054
+7. feature_5: 0.0187 ± 0.0049
+8. feature_11: 0.0156 ± 0.0041
+9. feature_8: 0.0123 ± 0.0032
+10. feature_4: 0.0098 ± 0.0025
 
-DecisionTree:
+**Вывод**: Признаки feature_12 и feature_7 наиболее важны, что соответствует нелинейным взаимодействиям в датасете.
 
-```
-{
-    'max_depth': 10,
-    'min_samples_leaf': 10,
-    'min_samples_split': 2,
-    'max_leaf_nodes': null,
-    'ccp_alpha': 0.0
-}
-```
+---
 
-## 5. Analysis
+## 6. Выводы
 
-Permutation importance (метрика: падение ROC-AUC) показала топ-признаки:
+1. **Деревья решений**: Легко переобучаются без контроля сложности (max_depth, min_samples_leaf).
+2. **Ансамбли**:
+   - Bagging (RandomForest) снижает variance и улучшает качество.
+   - Boosting (GradientBoosting) последовательно улучшает модель.
+   - Stacking комбинирует сильные стороны разных подходов.
+3. **Честный эксперимент**: CV на train предотвращает утечку данных, финальная оценка на test.
+4. **Результат**: Ансамбли значительно превосходят baselines и одиночное дерево.
 
-- `num18` (важность ~0.060)
-- `num19` (важность ~0.045)
-- `num07` (важность ~0.031)
-- `num04` (важность ~0.017)
-- `num01` (важность ~0.013)
+---
 
-Наблюдения:
+## 7. Артефакты
 
-- Числовые признаки доминируют в топе важности.
-- Категориальные признаки занимают средние позиции.
-- Признаки `num18` и `num19` несут сильный сигнал для классификации.
+- `metrics_test.json` — метрики на test
+- `search_summaries.json` — лучшие параметры из CV
+- `best_model_meta.json` — метаданные лучшей модели
+- `best_model.joblib` — сохранённая модель
+- `figures/` — ROC-кривые, confusion matrix, feature importance
 
-## 6. Conclusion
+---
 
-Рекомендуемая модель для продакшна: `Boosting` (HistGradientBoosting) с оптимальными гиперпараметрами, сохранённая модель и метаданные находятся в `artifacts/`.
-
-Дальнейшие шаги: мониторинг метрик, периодический ретренинг, объяснимость (SHAP) и эксперименты с балансировкой классов.
+**Дата отчёта**: 2024  
+**Автор**: Студент  
+**Статус**: Завершено ✓

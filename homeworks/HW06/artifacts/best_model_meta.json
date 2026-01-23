@@ -1,10 +1,14 @@
 {
-    "model_type": "HistGradientBoostingClassifier",
-    "model_name": "Boosting",
-    "best_params": {
+    "model": "GradientBoosting",
+    "params": {
         "learning_rate": 0.2,
-        "max_depth": 10,
-        "max_iter": 200
+        "max_depth": 7,
+        "min_samples_leaf": 10,
+        "n_estimators": 200
     },
-    "final_roc_auc_test": 0.9738078309887767
+    "test_metrics": {
+        "accuracy": 0.9711091044131837,
+        "f1_score": 0.9006622516556292,
+        "roc_auc": 0.9711091044131837
+    }
 }

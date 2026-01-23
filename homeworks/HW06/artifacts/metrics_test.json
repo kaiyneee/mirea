@@ -1,45 +1,32 @@
 {
-    "metadata": {
-        "dataset": "S06-hw-dataset-02.csv",
-        "test_size": 0.2,
-        "random_state": 42,
-        "stratify": true,
-        "metrics": [
-            "accuracy",
-            "f1_score",
-            "roc_auc"
-        ]
-    },
-    "results": {
-        "Dummy": {
-            "accuracy": 0.6766666666666666,
-            "f1_score": 0.0,
-            "roc_auc": 0.5
-        },
-        "LogisticRegression": {
-            "accuracy": 0.8275,
-            "f1_score": 0.7076271186440678,
-            "roc_auc": 0.8746905312071505
-        },
-        "DecisionTree": {
-            "accuracy": 0.865,
-            "f1_score": 0.7868421052631579,
-            "roc_auc": 0.9121687890406784
-        },
-        "RandomForest": {
-            "accuracy": 0.9291666666666667,
-            "f1_score": 0.8854447439353099,
-            "roc_auc": 0.9672947031638819
-        },
-        "GradientBoosting": {
-            "accuracy": 0.9375,
-            "f1_score": 0.9006622516556292,
-            "roc_auc": 0.9711091044131837
-        },
-        "Stacking": {
-            "accuracy": 0.93125,
-            "f1_score": 0.8910891089108911,
-            "roc_auc": 0.9662948809100604
-        }
-    }
+  "HistGradientBoosting": {
+    "accuracy": 0.9363333333333334,
+    "f1": 0.8982418753329782,
+    "roc_auc": 0.9746823421867858
+  },
+  "Stacking": {
+    "accuracy": 0.9386666666666666,
+    "f1": 0.9031578947368422,
+    "roc_auc": 0.9745452237062617
+  },
+  "RandomForest": {
+    "accuracy": 0.9346666666666666,
+    "f1": 0.8942826321467098,
+    "roc_auc": 0.97060992331522
+  },
+  "DecisionTree": {
+    "accuracy": 0.8633333333333333,
+    "f1": 0.7848898216159497,
+    "roc_auc": 0.9105332385353713
+  },
+  "LogReg(scaled)": {
+    "accuracy": 0.8296666666666667,
+    "f1": 0.7146845337800112,
+    "roc_auc": 0.878905083540704
+  },
+  "Dummy(most_frequent)": {
+    "accuracy": 0.6766666666666666,
+    "f1": 0.0,
+    "roc_auc": 0.5
+  }
 }

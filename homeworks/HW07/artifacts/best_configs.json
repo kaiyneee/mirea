@@ -1,17 +1,44 @@
 {
-    "dataset_1": {
-        "model": "KMeans",
-        "k": 2,
-        "criterion": "max_silhouette"
+    "df1": {
+        "algo": "kmeans",
+        "params": {
+            "k": 2
+        },
+        "metrics": {
+            "silhouette": 0.5216395622404242,
+            "davies_bouldin": 0.6853295219054458,
+            "calinski_harabasz": 11786.95462267153
+        },
+        "inertia": 48425.90697659399,
+        "n_clusters": 2,
+        "noise_frac": 0.0
     },
-    "dataset_2": {
-        "model": "KMeans",
-        "k": 2,
-        "criterion": "max_silhouette"
+    "df2": {
+        "algo": "kmeans",
+        "params": {
+            "k": 2
+        },
+        "metrics": {
+            "silhouette": 0.3068610017701601,
+            "davies_bouldin": 1.3234721699867638,
+            "calinski_harabasz": 3573.3933329348433
+        },
+        "inertia": 16588.50103229559,
+        "n_clusters": 2,
+        "noise_frac": 0.0
     },
-    "dataset_4": {
-        "model": "KMeans",
-        "k": 5,
-        "criterion": "max_silhouette"
+    "df3": {
+        "algo": "kmeans",
+        "params": {
+            "k": 3
+        },
+        "metrics": {
+            "silhouette": 0.31553248183109267,
+            "davies_bouldin": 1.1577832240211146,
+            "calinski_harabasz": 6957.15810694674
+        },
+        "inertia": 31123.497444205746,
+        "n_clusters": 3,
+        "noise_frac": 0.0
     }
 }

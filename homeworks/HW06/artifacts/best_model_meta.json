@@ -1,14 +1,18 @@
 {
-    "model": "GradientBoosting",
-    "params": {
-        "learning_rate": 0.2,
-        "max_depth": 7,
-        "min_samples_leaf": 10,
-        "n_estimators": 200
+  "best_model_label": "HistGradientBoosting",
+  "test_metrics": {
+    "accuracy": 0.9363333333333334,
+    "f1": 0.8982418753329782,
+    "roc_auc": 0.9746823421867858,
+    "model": "HistGradientBoosting"
+  },
+  "search_summary": {
+    "best_params": {
+      "learning_rate": 0.1,
+      "max_depth": null,
+      "max_leaf_nodes": 63
     },
-    "test_metrics": {
-        "accuracy": 0.9711091044131837,
-        "f1_score": 0.9006622516556292,
-        "roc_auc": 0.9711091044131837
-    }
+    "best_cv_roc_auc": 0.9719880531240899
+  },
+  "random_state": 42
 }

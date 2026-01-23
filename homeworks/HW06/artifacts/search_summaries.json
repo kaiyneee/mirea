@@ -1,28 +1,34 @@
 {
-    "DecisionTree": {
-        "best_params": {
-            "max_depth": 15,
-            "min_samples_leaf": 20,
-            "min_samples_split": 2
-        },
-        "best_cv_score": 0.9154676147513447
+  "LogReg(scaled)": {
+    "best_params": {
+      "lr__C": 10.0,
+      "lr__penalty": "l2",
+      "lr__solver": "lbfgs"
     },
-    "RandomForest": {
-        "best_params": {
-            "max_depth": null,
-            "max_features": "sqrt",
-            "min_samples_leaf": 1,
-            "n_estimators": 200
-        },
-        "best_cv_score": 0.9686771317959189
+    "best_cv_roc_auc": 0.8822238806908922
+  },
+  "DecisionTree": {
+    "best_params": {
+      "ccp_alpha": 0.0,
+      "max_depth": null,
+      "min_samples_leaf": 20
     },
-    "GradientBoosting": {
-        "best_params": {
-            "learning_rate": 0.2,
-            "max_depth": 7,
-            "min_samples_leaf": 10,
-            "n_estimators": 200
-        },
-        "best_cv_score": 0.9744981584992296
-    }
+    "best_cv_roc_auc": 0.9112358432907914
+  },
+  "RandomForest": {
+    "best_params": {
+      "max_depth": null,
+      "max_features": "sqrt",
+      "min_samples_leaf": 1
+    },
+    "best_cv_roc_auc": 0.9684465802433795
+  },
+  "HistGradientBoosting": {
+    "best_params": {
+      "learning_rate": 0.1,
+      "max_depth": null,
+      "max_leaf_nodes": 63
+    },
+    "best_cv_roc_auc": 0.9719880531240899
+  }
 }

@@ -1,116 +1,77 @@
-# HW06: Отчёт о деревьях решений и ансамблях
+# HW06 – Report
 
-## 1. Цель работы
+> Файл: `homeworks/HW06/report.md`  
+> Важно: не меняйте названия разделов (заголовков). Заполняйте текстом и/или вставляйте результаты.
 
-Исследовать работу деревьев решений, их склонность к переобучению и способы контроля сложности. Изучить ансамблевые методы (bagging, boosting, stacking) и провести честный ML-эксперимент с подбором гиперпараметров через CV.
+## 1. Dataset
 
----
+- Какой датасет выбран: `S06-hw-dataset-01.csv`
+- Размер: (12000, 30)
+- Целевая переменная: `target` ('0': 0.68, '1': 0.32)
+- Признаки: числовые 
 
-## 2. Описание данных
+## 2. Protocol
 
-### Датасет: S06-hw-dataset-02.csv
-- **Размер**: ~1000 образцов, ~15 признаков
-- **Тип задачи**: бинарная классификация
-- **Баланс классов**: умеренный дисбаланс (класс 0: ~55%, класс 1: ~45%)
-- **Особенности**: нелинейные взаимодействия признаков, шум
-- **Пропуски**: отсутствуют
-- **Типы признаков**: числовые
+- Разбиение: train/test: 0.75/0.25, `random_state`=42
+- Подбор: CV на train 5 фолдов. Обучали на 4 фолдах, валидировали на 1 фолде, повторяли 5 раз. Выбор лучших параметров: По roc_auc по всем 5 фолдам
 
----
 
-## 3. Методология
+- Метрики: 
+Accuracy — быстрая оценка общей доли верных ответов.
+F1 — показывает баланс precision/recall, критичен при неравных классах.
+ROC-AUC — оценивает качество ранжирования
 
-### 3.1 Препроцессинг
-- Разделение на X (признаки) и y (таргет)
-- Train/Test сплит: test_size=0.2, stratify=y, random_state=42
+## 3. Models
 
-### 3.2 Модели
-1. **Baselines**:
-   - DummyClassifier (most_frequent)
-   - LogisticRegression + StandardScaler
+Опишите, какие модели сравнивали и какие гиперпараметры подбирали.
 
-2. **Модели недели 6**:
-   - DecisionTreeClassifier (контроль сложности через max_depth, min_samples_leaf)
-   - RandomForestClassifier (bagging + случайность по признакам)
-   - GradientBoostingClassifier (boosting)
-   - StackingClassifier (композиция моделей через CV)
+Минимум:
 
-### 3.3 Подбор гиперпараметров
-- GridSearchCV на train с 5-fold CV
-- Scoring: ROC-AUC
-- Финальная оценка на test
+- DummyClassifier (baseline)
+- LogisticRegression ("lr__C": 10.0, "lr__penalty": "l2", "lr__solver": "lbfgs")
+- DecisionTreeClassifier("ccp_alpha": 0.0, "max_depth": null, "min_samples_leaf": 20)
+- RandomForestClassifier("max_depth": null, "max_features": "sqrt",  "min_samples_leaf": 1)
+- HistGradientBoosting("learning_rate": 0.1, "max_depth": null, "max_leaf_nodes": 63)
+- StackingClassifier 
 
-### 3.4 Метрики
-- Accuracy
-- F1-Score
-- ROC-AUC
+## 4. Results
+HistGradientBoosting
+    "accuracy": 0.9363333333333334,
+    "f1": 0.8982418753329782,
+    "roc_auc": 0.9746823421867858,
+ Stacking
+    "accuracy": 0.938,
+    "f1": 0.9020021074815595,
+    "roc_auc": 0.9745000253923113,
+RandomForest
+    "accuracy": 0.9346666666666666,
+    "f1": 0.8943965517241379,
+    "roc_auc": 0.9706312528566349,
+DecisionTree
+    "accuracy": 0.8633333333333333,
+    "f1": 0.7848898216159497,
+    "roc_auc": 0.9105332385353713,
+LogReg(scaled)
+    "accuracy": 0.8296666666666667,
+    "f1": 0.7146845337800112,
+    "roc_auc": 0.878905083540704,
+Dummy(most_frequent)
+    "accuracy": 0.6766666666666666,
+    "f1": 0.0,
+    "roc_auc": 0.5,
+- Победитель HistGradientBoosting по roc_aucю. Roc_auc = 0.9746823421867858
 
----
+## 5. Analysis
 
-## 4. Результаты
+- Устойчивость: что будет, если поменять `random_state` (хотя бы 5 прогонов для 1-2 моделей) – кратко
+- Ошибки: confusion matrix для лучшей модели находится в artifacts/figures/confusion_matrix.png модель хорошо прдсказывает оба класса
+- Интерпретация: permutation importance (top-15) находится в artifacts/figures/permutation_importance(top-15).png. Модель использует 2-3 сильных признака, остальные — слабый сигнал или шум. Упрощение модели может улучшить обобщающую способность
 
-### 4.1 Метрики на test
+## 6. Conclusion
 
-| Модель | Accuracy | F1-Score | ROC-AUC |
-|--------|----------|----------|---------|
-| Dummy | 0.5500 | 0.0000 | 0.5000 |
-| LogisticRegression | 0.7200 | 0.6786 | 0.7812 |
-| DecisionTree | 0.7850 | 0.7568 | 0.8321 |
-| RandomForest | 0.8100 | 0.7895 | 0.8712 |
-| GradientBoosting | 0.8250 | 0.8049 | 0.8923 |
-| Stacking | 0.8200 | 0.8000 | 0.8856 |
-
-### 4.2 Лучшие параметры
-
-- **DecisionTree**: max_depth=7, min_samples_leaf=5, min_samples_split=10
-- **RandomForest**: max_depth=None, max_features='sqrt', min_samples_leaf=1, n_estimators=200
-- **GradientBoosting**: learning_rate=0.1, max_depth=5, min_samples_leaf=5, n_estimators=200
-
-### 4.3 Лучшая модель
-GradientBoostingClassifier (ROC-AUC = 0.8923)
-
----
-
-## 5. Интерпретация
-
-### Permutation Importance (топ-10 признаков)
-1. feature_12: 0.0456 ± 0.0123
-2. feature_7: 0.0389 ± 0.0098
-3. feature_3: 0.0321 ± 0.0087
-4. feature_15: 0.0289 ± 0.0076
-5. feature_9: 0.0254 ± 0.0065
-6. feature_1: 0.0212 ± 0.0054
-7. feature_5: 0.0187 ± 0.0049
-8. feature_11: 0.0156 ± 0.0041
-9. feature_8: 0.0123 ± 0.0032
-10. feature_4: 0.0098 ± 0.0025
-
-**Вывод**: Признаки feature_12 и feature_7 наиболее важны, что соответствует нелинейным взаимодействиям в датасете.
-
----
-
-## 6. Выводы
-
-1. **Деревья решений**: Легко переобучаются без контроля сложности (max_depth, min_samples_leaf).
-2. **Ансамбли**:
-   - Bagging (RandomForest) снижает variance и улучшает качество.
-   - Boosting (GradientBoosting) последовательно улучшает модель.
-   - Stacking комбинирует сильные стороны разных подходов.
-3. **Честный эксперимент**: CV на train предотвращает утечку данных, финальная оценка на test.
-4. **Результат**: Ансамбли значительно превосходят baselines и одиночное дерево.
-
----
-
-## 7. Артефакты
-
-- `metrics_test.json` — метрики на test
-- `search_summaries.json` — лучшие параметры из CV
-- `best_model_meta.json` — метаданные лучшей модели
-- `best_model.joblib` — сохранённая модель
-- `figures/` — ROC-кривые, confusion matrix, feature importance
-
----
-
-**Дата отчёта**: 2024  
-**Автор**: Студент  
-**Статус**: Завершено ✓
+Контроль сложности — ключ для деревьев: max_depth, min_samples_leaf и ccp_alpha борются с переобучением
+RandomForest декоррелирует деревья через max_features и бутстрап, повышая устойчивость
+Бустинг последовательно учится на ошибках — требует аккуратного подбора learning_rate и n_estimators, чтобы не переобучиться
+train/test split строго вначале
+test — финальная проверка
+Стратификация и фиксированный seed — обеспечивают воспроизводимость и репрезентативность выборок

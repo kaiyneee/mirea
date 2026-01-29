@@ -1,43 +1,43 @@
 {
   "df1": {
     "kmeans": {
-      "silhouette": 0.5216395622404242,
-      "davies_bouldin": 0.6853295219054458,
-      "calinski_harabasz": 11786.95462267153
+      "silhouette": 0.5216395622404244,
+      "davies_bouldin": 0.6853295219054455,
+      "calinski_harabasz": 11786.954622671537
     },
     "dbscan": {
-      "silhouette": 0.5216395622404242,
-      "davies_bouldin": 0.6853295219054458,
-      "calinski_harabasz": 11786.95462267153
+      "silhouette": 0.5216395622404244,
+      "davies_bouldin": 0.6853295219054455,
+      "calinski_harabasz": 11786.954622671537
     },
     "agg": {
-      "silhouette": 0.5216395622404242,
-      "davies_bouldin": 0.6853295219054458,
-      "calinski_harabasz": 11786.95462267153
+      "silhouette": 0.5216395622404244,
+      "davies_bouldin": 0.6853295219054455,
+      "calinski_harabasz": 11786.954622671537
     }
   },
   "df2": {
     "kmeans": {
-      "silhouette": 0.3068610017701601,
-      "davies_bouldin": 1.3234721699867638,
-      "calinski_harabasz": 3573.3933329348433
+      "silhouette": 0.30686100177016024,
+      "davies_bouldin": 1.3234721699867633,
+      "calinski_harabasz": 3573.3933329348465
     },
     "agg": {
-      "silhouette": 0.4197677592223166,
+      "silhouette": 0.41976775922231674,
       "davies_bouldin": 0.8791287795996852,
-      "calinski_harabasz": 395.48256948317095
+      "calinski_harabasz": 395.48256948317123
     }
   },
   "df3": {
     "kmeans": {
-      "silhouette": 0.31553248183109267,
+      "silhouette": 0.31553248183109256,
       "davies_bouldin": 1.1577832240211146,
-      "calinski_harabasz": 6957.15810694674
+      "calinski_harabasz": 6957.158106946739
     },
     "agg": {
-      "silhouette": 0.4252961244445326,
-      "davies_bouldin": 0.8138020165811185,
-      "calinski_harabasz": 8.943143115556794
+      "silhouette": 0.4252961244445327,
+      "davies_bouldin": 0.813802016581118,
+      "calinski_harabasz": 8.943143115556797
     }
   }
 }
